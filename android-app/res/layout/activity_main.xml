@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="@color/ground">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:padding="12dp" android:gravity="center_vertical">
+        <TextView android:id="@+id/title" android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:text="Voicefork Android" android:textColor="@color/ink"
+            android:textSize="20sp" android:textStyle="bold" />
+        <TextView android:id="@+id/status" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Ready" android:textColor="@color/muted" android:textSize="12sp" />
+    </LinearLayout>
+
+    <HorizontalScrollView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:scrollbars="none" android:background="@color/surface">
+        <LinearLayout android:id="@+id/tabs" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:padding="6dp">
+            <Button android:id="@+id/tabEffects" style="?android:attr/buttonBarButtonStyle" android:layout_width="wrap_content" android:layout_height="40dp" android:text="Effects" android:textAllCaps="false" android:textColor="@color/ink"/>
+            <Button android:id="@+id/tabSoundboard" style="?android:attr/buttonBarButtonStyle" android:layout_width="wrap_content" android:layout_height="40dp" android:text="Soundboard" android:textAllCaps="false" android:textColor="@color/muted"/>
+            <Button android:id="@+id/tabAi" style="?android:attr/buttonBarButtonStyle" android:layout_width="wrap_content" android:layout_height="40dp" android:text="AI Voices" android:textAllCaps="false" android:textColor="@color/muted"/>
+            <Button android:id="@+id/tabBlend" style="?android:attr/buttonBarButtonStyle" android:layout_width="wrap_content" android:layout_height="40dp" android:text="Blend" android:textAllCaps="false" android:textColor="@color/muted"/>
+            <Button android:id="@+id/tabMake" style="?android:attr/buttonBarButtonStyle" android:layout_width="wrap_content" android:layout_height="40dp" android:text="Make voice" android:textAllCaps="false" android:textColor="@color/muted"/>
+            <Button android:id="@+id/tabAbout" style="?android:attr/buttonBarButtonStyle" android:layout_width="wrap_content" android:layout_height="40dp" android:text="About" android:textAllCaps="false" android:textColor="@color/muted"/>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <FrameLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
+        <ScrollView android:id="@+id/pageEffects" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Voice preset" android:textColor="@color/muted" android:textStyle="bold"/>
+                <GridLayout android:id="@+id/presetGrid" android:layout_width="match_parent" android:layout_height="wrap_content" android:columnCount="2" android:useDefaultMargins="true" android:layout_marginTop="6dp"/>
+                <TextView android:id="@+id/presetDesc" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/muted" android:layout_marginTop="6dp" android:text=""/>
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Noise gate (dB)" android:textColor="@color/muted" android:layout_marginTop="12dp"/>
+                <SeekBar android:id="@+id/gateSeek" android:layout_width="match_parent" android:layout_height="wrap_content" android:max="120" android:progress="70"/>
+                <TextView android:id="@+id/gateVal" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="-50 dB" android:textColor="@color/ink"/>
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Gain (dB)" android:textColor="@color/muted" android:layout_marginTop="8dp"/>
+                <SeekBar android:id="@+id/gainSeek" android:layout_width="match_parent" android:layout_height="wrap_content" android:max="40" android:progress="20"/>
+                <TextView android:id="@+id/gainVal" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="0 dB" android:textColor="@color/ink"/>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="12dp">
+                    <Button android:id="@+id/btnLive" android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1" android:text="Live preview" android:textAllCaps="false"/>
+                    <Button android:id="@+id/btnRecord" android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1" android:text="Record &amp; Apply" android:textAllCaps="false" android:layout_marginStart="8dp"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="8dp">
+                    <Button android:id="@+id/btnPlayLast" android:layout_width="0dp" android:layout_height="44dp" android:layout_weight="1" android:text="Play last" android:textAllCaps="false"/>
+                    <Button android:id="@+id/btnShareLast" android:layout_width="0dp" android:layout_height="44dp" android:layout_weight="1" android:text="Save/Share" android:textAllCaps="false" android:layout_marginStart="8dp"/>
+                </LinearLayout>
+                <TextView android:id="@+id/liveHint" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/muted" android:textSize="12sp" android:layout_marginTop="8dp"
+                    android:text="Live preview sends mic → effect → headphones. Use headphones to avoid feedback. Record &amp; Apply creates a WAV you can save/share."/>
+                <ProgressBar android:id="@+id/levelIn" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="8dp" android:max="100" android:progress="0" android:layout_marginTop="10dp"/>
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Input level" android:textColor="@color/muted" android:textSize="11sp"/>
+            </LinearLayout>
+        </ScrollView>
+
+        <ScrollView android:id="@+id/pageSoundboard" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" android:fillViewport="true">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Soundboard" android:textColor="@color/ink" android:textStyle="bold" android:textSize="16sp"/>
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/muted" android:text="Import or record clips. Tap to play. Long-press to rename/delete. Android app plays clips locally; desktop Voicefork can route clips into a virtual mic." android:layout_marginTop="4dp"/>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="8dp">
+                    <Button android:id="@+id/sbImport" android:layout_width="0dp" android:layout_height="44dp" android:layout_weight="1" android:text="Import WAV" android:textAllCaps="false"/>
+                    <Button android:id="@+id/sbRecord" android:layout_width="0dp" android:layout_height="44dp" android:layout_weight="1" android:text="Record clip" android:textAllCaps="false" android:layout_marginStart="8dp"/>
+                </LinearLayout>
+                <LinearLayout android:id="@+id/sbList" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginTop="8dp"/>
+            </LinearLayout>
+        </ScrollView>
+
+        <ScrollView android:id="@+id/pageAi" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" android:fillViewport="true">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="AI Voices (RVC) — Android adaptation" android:textColor="@color/ink" android:textStyle="bold" android:textSize="16sp"/>
+                <TextView android:id="@+id/aiText" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/muted" android:layout_marginTop="8dp"/>
+                <Button android:id="@+id/btnBrowseVoices" android:layout_width="match_parent" android:layout_height="44dp" android:text="Browse community voices (Hugging Face)" android:textAllCaps="false" android:layout_marginTop="10dp"/>
+                <Button android:id="@+id/btnImportModel" android:layout_width="match_parent" android:layout_height="44dp" android:text="Import voice model file (.pth/.onnx)" android:textAllCaps="false" android:layout_marginTop="8dp"/>
+                <TextView android:id="@+id/aiModelStatus" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/ink" android:layout_marginTop="8dp" android:text="No RVC model loaded in this build."/>
+            </LinearLayout>
+        </ScrollView>
+
+        <ScrollView android:id="@+id/pageBlend" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" android:fillViewport="true">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Blend" android:textColor="@color/ink" android:textStyle="bold" android:textSize="16sp"/>
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/muted" android:layout_marginTop="6dp"
+                    android:text="Voicefork blends two RVC voice models. On Android this build provides DSP preset blending: pick two presets and a mix, then record/apply. RVC model-weight blending requires loaded RVC models."/>
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Preset A" android:textColor="@color/muted" android:layout_marginTop="10dp"/>
+                <Spinner android:id="@+id/blendA" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Preset B" android:textColor="@color/muted" android:layout_marginTop="8dp"/>
+                <Spinner android:id="@+id/blendB" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Mix (A ← → B)" android:textColor="@color/muted" android:layout_marginTop="8dp"/>
+                <SeekBar android:id="@+id/blendMix" android:layout_width="match_parent" android:layout_height="wrap_content" android:max="100" android:progress="50"/>
+                <TextView android:id="@+id/blendMixVal" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/ink" android:text="50%"/>
+                <Button android:id="@+id/btnBlendPreview" android:layout_width="match_parent" android:layout_height="44dp" android:text="Record &amp; Apply Blend" android:textAllCaps="false" android:layout_marginTop="10dp"/>
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/muted" android:textSize="12sp" android:layout_marginTop="6dp"
+                    android:text="Blend processing applies preset A and B to the same recording and mixes the results. For best results, use presets with compatible character."/>
+            </LinearLayout>
+        </ScrollView>
+
+        <ScrollView android:id="@+id/pageMake" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" android:fillViewport="true">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Make my voice" android:textColor="@color/ink" android:textStyle="bold" android:textSize="16sp"/>
+                <TextView android:id="@+id/makeText" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/muted" android:layout_marginTop="8dp"/>
+                <Button android:id="@+id/btnRecordSample" android:layout_width="match_parent" android:layout_height="44dp" android:text="Record a clean sample (WAV export)" android:textAllCaps="false" android:layout_marginTop="10dp"/>
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/muted" android:textSize="12sp" android:layout_marginTop="6dp"
+                    android:text="Only clone or use voices you have permission to use. Do not impersonate real people, deceive, or harass."/>
+            </LinearLayout>
+        </ScrollView>
+
+        <ScrollView android:id="@+id/pageAbout" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" android:fillViewport="true">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="About Voicefork Android" android:textColor="@color/ink" android:textStyle="bold" android:textSize="16sp"/>
+                <TextView android:id="@+id/aboutText" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/muted" android:layout_marginTop="8dp"/>
+                <Button android:id="@+id/btnOpenSource" android:layout_width="match_parent" android:layout_height="44dp" android:text="Open Voicefork source (GitHub)" android:textAllCaps="false" android:layout_marginTop="10dp"/>
+            </LinearLayout>
+        </ScrollView>
+    </FrameLayout>
+</LinearLayout>

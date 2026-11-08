@@ -1,0 +1,11 @@
+<resources>
+    <color name="ground">#101113</color>
+    <color name="surface">#17181B</color>
+    <color name="raised">#24262B</color>
+    <color name="line">#2A2C31</color>
+    <color name="ink">#ECECEF</color>
+    <color name="muted">#8A8D96</color>
+    <color name="accent">#FF5A4E</color>
+    <color name="accent_soft">#33FF5A4E</color>
+    <color name="green">#43D17A</color>
+</resources>

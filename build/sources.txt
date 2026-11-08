@@ -1,0 +1,17 @@
+android-app/src/com/voicefork/android/dsp/Effect.java
+android-app/src/com/voicefork/android/dsp/Chain.java
+android-app/src/com/voicefork/android/dsp/Gain.java
+android-app/src/com/voicefork/android/dsp/Distortion.java
+android-app/src/com/voicefork/android/dsp/Bitcrush.java
+android-app/src/com/voicefork/android/dsp/RingMod.java
+android-app/src/com/voicefork/android/dsp/Biquad.java
+android-app/src/com/voicefork/android/dsp/NoiseGate.java
+android-app/src/com/voicefork/android/dsp/Limiter.java
+android-app/src/com/voicefork/android/dsp/PitchShift.java
+android-app/src/com/voicefork/android/dsp/DelayEffects.java
+android-app/src/com/voicefork/android/dsp/Presets.java
+android-app/src/com/voicefork/android/audio/WavUtil.java
+android-app/src/com/voicefork/android/audio/AudioEngine.java
+android-app/src/com/voicefork/android/soundboard/SoundboardManager.java
+android-app/src/com/voicefork/android/MainActivity.java
+build/gen/com/voicefork/android/R.java
