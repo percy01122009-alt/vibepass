@@ -38,28 +38,42 @@ public class TranslationManager implements RecognitionListener {
     public TranslationManager(Activity act, Callback cb) {
         this.act = act;
         this.cb = cb;
-        initTts();
-        if (SpeechRecognizer.isRecognitionAvailable(act)) {
-            speech = SpeechRecognizer.createSpeechRecognizer(act);
-            speech.setRecognitionListener(this);
+        try {
+            initTts();
+        } catch (Exception e) {
+            Log.e(TAG, "TTS init failed", e);
+        }
+        try {
+            if (SpeechRecognizer.isRecognitionAvailable(act)) {
+                speech = SpeechRecognizer.createSpeechRecognizer(act);
+                speech.setRecognitionListener(this);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "SpeechRecognizer init failed", e);
+            speech = null;
         }
     }
 
     private void initTts() {
-        tts = new TextToSpeech(act, status -> {
-            if (status == TextToSpeech.SUCCESS) {
-                tts.setLanguage(Locale.forLanguageTag(targetLang));
-                tts.setPitch(1.0f);
-                tts.setSpeechRate(0.95f);
-                tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
-                    @Override public void onStart(String utteranceId) { cb.onTtsStarted(); }
-                    @Override public void onDone(String utteranceId) { cb.onTtsDone(); }
-                    @Override public void onError(String utteranceId) { cb.onError("TTS error"); }
-                });
-            } else {
-                cb.onError("TTS init failed");
-            }
-        });
+        try {
+            tts = new TextToSpeech(act, status -> {
+                if (status == TextToSpeech.SUCCESS) {
+                    tts.setLanguage(Locale.forLanguageTag(targetLang));
+                    tts.setPitch(1.0f);
+                    tts.setSpeechRate(0.95f);
+                    tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                        @Override public void onStart(String utteranceId) { cb.onTtsStarted(); }
+                        @Override public void onDone(String utteranceId) { cb.onTtsDone(); }
+                        @Override public void onError(String utteranceId) { cb.onError("TTS error"); }
+                    });
+                } else {
+                    cb.onError("TTS init failed");
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "TextToSpeech constructor failed", e);
+            tts = null;
+        }
     }
 
     public void setTargetLang(String lang) { targetLang = lang; if (tts != null) tts.setLanguage(Locale.forLanguageTag(lang)); }
@@ -107,7 +121,6 @@ public class TranslationManager implements RecognitionListener {
     }
 
     private String translate(String text, String from, String to) {
-        // Try LibreTranslate public API (free, no key)
         try {
             String url = "https://libretranslate.de/translate";
             String body = "{\"q\":\"" + escapeJson(text) + "\",\"source\":\"" + from + "\",\"target\":\"" + to + "\"}";
@@ -133,13 +146,16 @@ public class TranslationManager implements RecognitionListener {
                 }
             }
         } catch (Exception ignored) {}
-        // fallback: return original text
         return text;
     }
 
     private void speak(String text) {
         if (tts == null) return;
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "vf-" + System.currentTimeMillis());
+        try {
+            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "vf-" + System.currentTimeMillis());
+        } catch (Exception e) {
+            Log.e(TAG, "TTS speak failed", e);
+        }
     }
 
     public void stop() {
@@ -152,7 +168,6 @@ public class TranslationManager implements RecognitionListener {
         return s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "");
     }
 
-    // RecognitionListener
     @Override public void onReadyForSpeech(Bundle params) { cb.onStatus("Listening..."); }
     @Override public void onBeginningOfSpeech() {}
     @Override public void onRmsChanged(float rmsdB) {}
