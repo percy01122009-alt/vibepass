@@ -36,8 +36,12 @@ public class MainActivity extends Activity implements AudioEngine.Listener {
     private GridLayout presetGrid;
     private LinearLayout sbList;
     private Spinner blendA, blendB;
-    private final View[] pages = new View[6];
-    private final Button[] tabBtns = new Button[6];
+    private TranslationManager transManager;
+    private TextView trStatus, trRecognized, trTranslated;
+    private Spinner trLang;
+    private Button trStart, trStop;
+    private final View[] pages = new View[7];
+    private final Button[] tabBtns = new Button[7];
     private String selectedPreset = "clean";
     private File lastOutput;
     private boolean sbRecActive = false;
@@ -54,16 +58,16 @@ public class MainActivity extends Activity implements AudioEngine.Listener {
         setupEffects();
         setupSoundboard();
         setupAiBlendMake();
+        setupTranslate();
         requestPerms();
     }
 
     private void bind() {
         status = findViewById(R.id.status);
         pages[0]=findViewById(R.id.pageEffects); pages[1]=findViewById(R.id.pageSoundboard); pages[2]=findViewById(R.id.pageAi);
-        pages[3]=findViewById(R.id.pageBlend); pages[4]=findViewById(R.id.pageMake); pages[5]=findViewById(R.id.pageAbout);
+        pages[3]= findViewById(R.id.pageBlend); pages[4]= findViewById(R.id.pageMake); pages[5]= findViewById(R.id.pageAbout); pages[6]= findViewById(R.id.pageTranslate);
         tabBtns[0]=findViewById(R.id.tabEffects); tabBtns[1]=findViewById(R.id.tabSoundboard); tabBtns[2]=findViewById(R.id.tabAi);
-        tabBtns[3]=findViewById(R.id.tabBlend); tabBtns[4]=findViewById(R.id.tabMake); tabBtns[5]=findViewById(R.id.tabAbout);
-        presetGrid = findViewById(R.id.presetGrid); presetDesc = findViewById(R.id.presetDesc);
+        tabBtns[3]= findViewById(R.id.tabBlend); tabBtns[4]= findViewById(R.id.tabMake); tabBtns[5]= findViewById(R.id.tabAbout); tabBtns[6]= findViewById(R.id.tabTranslate);
         gateSeek = findViewById(R.id.gateSeek); gainSeek = findViewById(R.id.gainSeek);
         gateVal = findViewById(R.id.gateVal); gainVal = findViewById(R.id.gainVal);
         btnLive = findViewById(R.id.btnLive); btnRecord = findViewById(R.id.btnRecord);
@@ -73,6 +77,8 @@ public class MainActivity extends Activity implements AudioEngine.Listener {
         blendA = findViewById(R.id.blendA); blendB = findViewById(R.id.blendB); blendMix = findViewById(R.id.blendMix); blendMixVal = findViewById(R.id.blendMixVal);
         aiText = findViewById(R.id.aiText); aiModelStatus = findViewById(R.id.aiModelStatus);
         makeText = findViewById(R.id.makeText); aboutText = findViewById(R.id.aboutText);
+        trStatus = findViewById(R.id.trStatus); trRecognized = findViewById(R.id.trRecognized); trTranslated = findViewById(R.id.trTranslated);
+        trLang = findViewById(R.id.trLang); trStart = findViewById(R.id.trStart); trStop = findViewById(R.id.trStop);
     }
 
     private void setupTabs() {
@@ -85,6 +91,29 @@ public class MainActivity extends Activity implements AudioEngine.Listener {
             tabBtns[i].setTextColor(getResources().getColor(i==idx?R.color.ink:R.color.muted));
         }
         if (idx==1) refreshSoundboard();
+    }
+
+    private void setupTranslate() {
+        transManager = new TranslationManager(this, new TranslationManager.Callback() {
+            @Override public void onRecognized(String text) { runOnUiThread(() -> trRecognized.setText("Heard: " + text)); }
+            @Override public void onTranslated(String from, String to, String text) { runOnUiThread(() -> trTranslated.setText("\u2192 " + text)); }
+            @Override public void onTtsStarted() { runOnUiThread(() -> trStatus.setText("Speaking...")); }
+            @Override public void onTtsDone() { runOnUiThread(() -> trStatus.setText("Tap Start to speak.")); }
+            @Override public void onError(String msg) { runOnUiThread(() -> { trStatus.setText("Error"); toast(msg); }); }
+            @Override public void onStatus(String status) { runOnUiThread(() -> trStatus.setText(status)); }
+        });
+        String[] langs = {"Deutsch","Französisch","Spanisch","Italienisch","Portugiesisch","Niederländisch","Russisch","Japanisch","Koreanisch","Chinesisch","Arabisch","Hindi","Türkisch","Schwedisch","Norwegisch","Dänisch","Finnisch","Polnisch","Tschechisch","Griechisch"};
+        String[] codes = {"de","fr","es","it","pt","nl","ru","ja","ko","zh","ar","hi","tr","sv","no","da","fi","pl","cs","el"};
+        android.widget.ArrayAdapter<String> la = new android.widget.ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new java.util.ArrayList<>(java.util.Arrays.asList(langs)));
+        la.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        trLang.setAdapter(la);
+        trLang.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override public void onItemSelected(android.widget.AdapterView<?> parent, android.view.View v, int pos, long id) { transManager.setTargetLang(codes[pos]); }
+            @Override public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+        });
+        transManager.setTargetLang(codes[0]);
+        trStart.setOnClickListener(v -> { if (!hasRecordPerm()) { requestPerms(); return; } transManager.startListening(); });
+        trStop.setOnClickListener(v -> transManager.stopListening());
     }
 
     private void setupEffects() {
@@ -338,5 +367,5 @@ public class MainActivity extends Activity implements AudioEngine.Listener {
         };
     }
 
-    @Override protected void onDestroy() { super.onDestroy(); if (engine!=null) engine.stopLive(); }
+    @Override protected void onDestroy() { super.onDestroy(); if (engine!=null) engine.stopLive(); if (transManager!=null) transManager.stop(); }
 }

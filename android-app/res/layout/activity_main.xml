@@ -22,6 +22,7 @@
             <Button android:id="@+id/tabBlend" style="?android:attr/buttonBarButtonStyle" android:layout_width="wrap_content" android:layout_height="40dp" android:text="Blend" android:textAllCaps="false" android:textColor="@color/muted"/>
             <Button android:id="@+id/tabMake" style="?android:attr/buttonBarButtonStyle" android:layout_width="wrap_content" android:layout_height="40dp" android:text="Make voice" android:textAllCaps="false" android:textColor="@color/muted"/>
             <Button android:id="@+id/tabAbout" style="?android:attr/buttonBarButtonStyle" android:layout_width="wrap_content" android:layout_height="40dp" android:text="About" android:textAllCaps="false" android:textColor="@color/muted"/>
+            <Button android:id="@+id/tabTranslate" android:layout_width="wrap_content" android:layout_height="40dp" android:text="Translate" android:textAllCaps="false" android:textColor="@color/muted"/>
         </LinearLayout>
     </HorizontalScrollView>
 
@@ -107,6 +108,21 @@
                 <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="About Voicefork Android" android:textColor="@color/ink" android:textStyle="bold" android:textSize="16sp"/>
                 <TextView android:id="@+id/aboutText" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/muted" android:layout_marginTop="8dp"/>
                 <Button android:id="@+id/btnOpenSource" android:layout_width="match_parent" android:layout_height="44dp" android:text="Open Voicefork source (GitHub)" android:textAllCaps="false" android:layout_marginTop="10dp"/>
+            </LinearLayout>
+        </ScrollView>
+        <ScrollView android:id="@+id/pageTranslate" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone" android:fillViewport="true">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Real-time Translation" android:textColor="@color/ink" android:textStyle="bold" android:textSize="16sp"/>
+                <TextView android:id="@+id/trStatus" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/muted" android:layout_marginTop="8dp" android:text="Tap Start to speak. Your voice is translated and spoken aloud."/>
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Target language" android:textColor="@color/muted" android:layout_marginTop="10dp"/>
+                <Spinner android:id="@+id/trLang" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="12dp">
+                    <Button android:id="@+id/trStart" android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1" android:text="Start" android:textAllCaps="false"/>
+                    <Button android:id="@+id/trStop" android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1" android:text="Stop" android:textAllCaps="false" android:layout_marginStart="8dp"/>
+                </LinearLayout>
+                <TextView android:id="@+id/trRecognized" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/ink" android:layout_marginTop="10dp" android:text=""/>
+                <TextView android:id="@+id/trTranslated" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/accent" android:layout_marginTop="4dp" android:text=""/>
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/muted" android:textSize="11sp" android:layout_marginTop="8dp" android:text="Uses Android SpeechRecognizer + LibreTranslate + TTS. Audio is processed on-device; translation may use a network call. Latency depends on network and device."/>
             </LinearLayout>
         </ScrollView>
     </FrameLayout>

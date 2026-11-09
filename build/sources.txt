@@ -14,4 +14,6 @@ android-app/src/com/voicefork/android/audio/WavUtil.java
 android-app/src/com/voicefork/android/audio/AudioEngine.java
 android-app/src/com/voicefork/android/soundboard/SoundboardManager.java
 android-app/src/com/voicefork/android/MainActivity.java
+android-app/src/com/voicefork/android/TranslationManager.java
+android-app/src/com/voicefork/android/VoiceDownloadManager.java
 build/gen/com/voicefork/android/R.java
