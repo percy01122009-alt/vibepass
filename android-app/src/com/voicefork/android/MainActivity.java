@@ -86,6 +86,14 @@ public class MainActivity extends Activity implements AudioEngine.Listener {
         makeText = findViewById(R.id.makeText); aboutText = findViewById(R.id.aboutText);
         trStatus = findViewById(R.id.trStatus); trRecognized = findViewById(R.id.trRecognized); trTranslated = findViewById(R.id.trTranslated);
         trLang = findViewById(R.id.trLang); trStart = findViewById(R.id.trStart); trStop = findViewById(R.id.trStop);
+        // Null checks
+        for (int i=0;i<tabBtns.length;i++) if (tabBtns[i]==null) android.util.Log.w("VF-Bind", "tabBtns["+i+"] is null");
+        if (btnLive==null) android.util.Log.w("VF-Bind", "btnLive is null");
+        if (btnRecord==null) android.util.Log.w("VF-Bind", "btnRecord is null");
+        if (btnPlayLast==null) android.util.Log.w("VF-Bind", "btnPlayLast is null");
+        if (btnShareLast==null) android.util.Log.w("VF-Bind", "btnShareLast is null");
+        if (trStart==null) android.util.Log.w("VF-Bind", "trStart is null");
+        if (trStop==null) android.util.Log.w("VF-Bind", "trStop is null");
     }
 
     private void setupTabs() {
@@ -152,12 +160,12 @@ public class MainActivity extends Activity implements AudioEngine.Listener {
         gateSeek.setProgress(70); gainSeek.setProgress(20);
         engine.setGateDb(-50f); engine.setGainDb(0f);
 
-        btnLive.setOnClickListener(v -> {
+        if (btnLive != null) btnLive.setOnClickListener(v -> {
             if (!hasRecordPerm()) { requestPerms(); return; }
             if (engine.isLive()) { engine.stopLive(); btnLive.setText("Live preview"); }
             else { engine.startLive(); btnLive.setText("Stop live"); }
         });
-        btnRecord.setOnClickListener(v -> {
+        if (btnRecord != null) btnRecord.setOnClickListener(v -> {
             if (!hasRecordPerm()) { requestPerms(); return; }
             if (engine.isLive()) { toast("Stop live preview before recording."); return; }
             if (engine.isRecording()) {
@@ -169,8 +177,8 @@ public class MainActivity extends Activity implements AudioEngine.Listener {
                 btnRecord.setText("Stop & Apply (" + Presets.get(selectedPreset).name + ")");
             }
         });
-        btnPlayLast.setOnClickListener(v -> playLast());
-        btnShareLast.setOnClickListener(v -> shareLast());
+        if (btnPlayLast != null) btnPlayLast.setOnClickListener(v -> playLast());
+        if (btnShareLast != null) btnShareLast.setOnClickListener(v -> shareLast());
     }
 
     private void selectPreset(String key) {
@@ -185,11 +193,11 @@ public class MainActivity extends Activity implements AudioEngine.Listener {
     private void updatePresetDesc() { presetDesc.setText(Presets.get(selectedPreset).description + "  •  11 presets, noise gate, gain & limiter — like Voicefork effects."); }
 
     private void setupSoundboard() {
-        findViewById(R.id.sbImport).setOnClickListener(v -> {
+        if (findViewById(R.id.sbImport) != null) findViewById(R.id.sbImport).setOnClickListener(v -> {
             Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT); i.addCategory(Intent.CATEGORY_OPENABLE); i.setType("audio/*");
             startActivityForResult(i, REQ_IMPORT_SB);
         });
-        sbRecordBtn.setOnClickListener(v -> {
+        if (sbRecordBtn != null) sbRecordBtn.setOnClickListener(v -> {
             if (!hasRecordPerm()) { requestPerms(); return; }
             toast("Soundboard clip recording: use Record & Apply on Effects tab and save the WAV, then import it here. (Dedicated clip recorder simplified in this build.)");
         });
@@ -216,39 +224,41 @@ public class MainActivity extends Activity implements AudioEngine.Listener {
     }
 
     private void setupAiBlendMake() {
-        aiText.setText("Voicefork's desktop AI voices use RVC (HuBERT + RMVPE/FCPE + voice models) for real-time conversion. " +
+        if (aiText != null) aiText.setText("Voicefork's desktop AI voices use RVC (HuBERT + RMVPE/FCPE + voice models) for real-time conversion. " +
                 "Full on-device RVC inference/training is not bundled in this Android build because it requires large ML runtimes and model conversion.\n\n" +
                 "What's included here: the complete Voicefork-style DSP effect engine (11 presets), soundboard, recording/apply/share, and blend workflows. " +
                 "You can browse community RVC voices on Hugging Face and import model files for future/advanced integration.");
-        makeText.setText("Voicefork desktop can train a custom RVC voice from ~10 minutes of recordings. " +
+        if (makeText != null) makeText.setText("Voicefork desktop can train a custom RVC voice from ~10 minutes of recordings. " +
                 "On-device RVC training is not practical in this Android build. You can record clean WAV samples here and use them with the desktop Voicefork trainer, " +
                 "or with compatible RVC tools, to create a voice model.\n\nResponsible use: only clone/use voices you have permission to use. Don't impersonate, deceive, or harass.");
-        aboutText.setText("Voicefork Android — a mobile, downloadable APK inspired by Voicefork (https://github.com/dank-zz/voicefork).\n\n" +
+        if (aboutText != null) aboutText.setText("Voicefork Android — a mobile, downloadable APK inspired by Voicefork (https://github.com/dank-zz/voicefork).\n\n" +
                 "Fully working on Android: 11 DSP presets (Clean, Deep, Chipmunk, Demon, Giant, Robot, Alien, Radio, Megaphone, Cave, 8-bit), " +
                 "noise gate, gain, limiter, live mic preview (headphones recommended), record & apply, WAV export/share, soundboard import/play, and DSP blend.\n\n" +
                 "Android-adapted/honest: desktop Voicefork's real-time RVC AI voices, HuggingFace in-app model workflow, on-device training, system virtual-mic routing (VB-CABLE), and global hotkeys depend on desktop/PyTorch/GPU capabilities and are not fully replicated here.\n\n" +
                 "Privacy: audio is processed on-device. No account required. Use voices responsibly.\n\nCredits: inspired by Voicefork (MIT). DSP design ported from Voicefork's effects/presets.");
-        findViewById(R.id.btnBrowseVoices).setOnClickListener(v -> openUrl("https://huggingface.co/models?search=rvc"));
-        findViewById(R.id.btnImportModel).setOnClickListener(v -> {
+        if (findViewById(R.id.btnBrowseVoices) != null) findViewById(R.id.btnBrowseVoices).setOnClickListener(v -> openUrl("https://huggingface.co/models?search=rvc"));
+        if (findViewById(R.id.btnImportModel) != null) findViewById(R.id.btnImportModel).setOnClickListener(v -> {
             Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT); i.addCategory(Intent.CATEGORY_OPENABLE); i.setType("*/*");
             startActivityForResult(i, REQ_IMPORT_MODEL);
         });
-        findViewById(R.id.btnRecordSample).setOnClickListener(v -> { showTab(0); toast("Use Record & Apply on the Effects tab with Clean preset to export a clean sample."); });
-        findViewById(R.id.btnOpenSource).setOnClickListener(v -> openUrl("https://github.com/dank-zz/voicefork"));
+        if (findViewById(R.id.btnRecordSample) != null) findViewById(R.id.btnRecordSample).setOnClickListener(v -> { showTab(0); toast("Use Record & Apply on the Effects tab with Clean preset to export a clean sample."); });
+        if (findViewById(R.id.btnOpenSource) != null) findViewById(R.id.btnOpenSource).setOnClickListener(v -> openUrl("https://github.com/dank-zz/voicefork"));
 
         // Blend
-        List<String> names = new ArrayList<>();
-        for (Presets.Info p : Presets.list()) names.add(p.name + "|" + p.key);
-        ArrayAdapter<String> aa = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, toDisplay(names)) {
-            @Override public View getView(int p, View c, android.view.ViewGroup parent){ View v=super.getView(p,c,parent); ((TextView)v).setTextColor(getResources().getColor(R.color.ink)); return v; }
-            @Override public View getDropDownView(int p, View c, android.view.ViewGroup parent){ View v=super.getDropDownView(p,c,parent); ((TextView)v).setTextColor(getResources().getColor(R.color.ink)); v.setBackgroundColor(getResources().getColor(R.color.raised)); return v; }
-        };
-        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        blendA.setAdapter(aa); blendB.setAdapter(aa);
-        if (names.size()>1) blendB.setSelection(1);
-        blendMix.setOnSeekBarChangeListener(simpleSeek(v -> blendMixVal.setText(v+"%")));
-        blendMixVal.setText("50%");
-        findViewById(R.id.btnBlendPreview).setOnClickListener(v -> doBlendRecord());
+        if (blendA != null && blendB != null && blendMix != null && blendMixVal != null) {
+            List<String> names = new ArrayList<>();
+            for (Presets.Info p : Presets.list()) names.add(p.name + "|" + p.key);
+            ArrayAdapter<String> aa = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, toDisplay(names)) {
+                @Override public View getView(int p, View c, android.view.ViewGroup parent){ View v=super.getView(p,c,parent); ((TextView)v).setTextColor(getResources().getColor(R.color.ink)); return v; }
+                @Override public View getDropDownView(int p, View c, android.view.ViewGroup parent){ View v=super.getDropDownView(p,c,parent); ((TextView)v).setTextColor(getResources().getColor(R.color.ink)); v.setBackgroundColor(getResources().getColor(R.color.raised)); return v; }
+            };
+            aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            blendA.setAdapter(aa); blendB.setAdapter(aa);
+            if (names.size()>1) blendB.setSelection(1);
+            blendMix.setOnSeekBarChangeListener(simpleSeek(v -> blendMixVal.setText(v+"%")));
+            blendMixVal.setText("50%");
+            if (findViewById(R.id.btnBlendPreview) != null) findViewById(R.id.btnBlendPreview).setOnClickListener(v -> doBlendRecord());
+        }
     }
 
     private List<String> toDisplay(List<String> nk){ List<String> o=new ArrayList<>(); for(String s:nk) o.add(s.split("\\|")[0]); return o; }
