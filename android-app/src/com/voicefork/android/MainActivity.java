@@ -49,17 +49,24 @@ public class MainActivity extends Activity implements AudioEngine.Listener {
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try { StrictMode.VmPolicy.Builder b = new StrictMode.VmPolicy.Builder(); StrictMode.setVmPolicy(b.build()); } catch (Exception ignored) {}
-        setContentView(R.layout.activity_main);
-        engine = new AudioEngine(this);
-        soundboard = new SoundboardManager(this, AudioEngine.SR);
-        bind();
-        setupTabs();
-        setupEffects();
-        setupSoundboard();
-        setupAiBlendMake();
-        setupTranslate();
-        requestPerms();
+        try {
+            StrictMode.VmPolicy.Builder b = new StrictMode.VmPolicy.Builder(); StrictMode.setVmPolicy(b.build());
+        } catch (Exception ignored) {}
+        try {
+            setContentView(R.layout.activity_main);
+            engine = new AudioEngine(this);
+            soundboard = new SoundboardManager(this, AudioEngine.SR);
+            bind();
+            setupTabs();
+            setupEffects();
+            setupSoundboard();
+            setupAiBlendMake();
+            setupTranslate();
+            requestPerms();
+        } catch (Exception e) {
+            android.util.Log.e("VF-Main", "onCreate failed", e);
+            android.widget.Toast.makeText(this, "Init error: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
+        }
     }
 
     private void bind() {
@@ -94,26 +101,33 @@ public class MainActivity extends Activity implements AudioEngine.Listener {
     }
 
     private void setupTranslate() {
-        transManager = new TranslationManager(this, new TranslationManager.Callback() {
-            @Override public void onRecognized(String text) { runOnUiThread(() -> trRecognized.setText("Heard: " + text)); }
-            @Override public void onTranslated(String from, String to, String text) { runOnUiThread(() -> trTranslated.setText("\u2192 " + text)); }
-            @Override public void onTtsStarted() { runOnUiThread(() -> trStatus.setText("Speaking...")); }
-            @Override public void onTtsDone() { runOnUiThread(() -> trStatus.setText("Tap Start to speak.")); }
-            @Override public void onError(String msg) { runOnUiThread(() -> { trStatus.setText("Error"); toast(msg); }); }
-            @Override public void onStatus(String status) { runOnUiThread(() -> trStatus.setText(status)); }
-        });
-        String[] langs = {"Deutsch","Französisch","Spanisch","Italienisch","Portugiesisch","Niederländisch","Russisch","Japanisch","Koreanisch","Chinesisch","Arabisch","Hindi","Türkisch","Schwedisch","Norwegisch","Dänisch","Finnisch","Polnisch","Tschechisch","Griechisch"};
-        String[] codes = {"de","fr","es","it","pt","nl","ru","ja","ko","zh","ar","hi","tr","sv","no","da","fi","pl","cs","el"};
-        android.widget.ArrayAdapter<String> la = new android.widget.ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new java.util.ArrayList<>(java.util.Arrays.asList(langs)));
-        la.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        trLang.setAdapter(la);
-        trLang.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
-            @Override public void onItemSelected(android.widget.AdapterView<?> parent, android.view.View v, int pos, long id) { transManager.setTargetLang(codes[pos]); }
-            @Override public void onNothingSelected(android.widget.AdapterView<?> parent) {}
-        });
-        transManager.setTargetLang(codes[0]);
-        trStart.setOnClickListener(v -> { if (!hasRecordPerm()) { requestPerms(); return; } transManager.startListening(); });
-        trStop.setOnClickListener(v -> transManager.stopListening());
+        try {
+            transManager = new TranslationManager(this, new TranslationManager.Callback() {
+                @Override public void onRecognized(String text) { runOnUiThread(() -> trRecognized.setText("Heard: " + text)); }
+                @Override public void onTranslated(String from, String to, String text) { runOnUiThread(() -> trTranslated.setText("\u2192 " + text)); }
+                @Override public void onTtsStarted() { runOnUiThread(() -> trStatus.setText("Speaking...")); }
+                @Override public void onTtsDone() { runOnUiThread(() -> trStatus.setText("Tap Start to speak.")); }
+                @Override public void onError(String msg) { runOnUiThread(() -> { trStatus.setText("Error"); toast(msg); }); }
+                @Override public void onStatus(String status) { runOnUiThread(() -> trStatus.setText(status)); }
+            });
+            String[] langs = {"Deutsch","Französisch","Spanisch","Italienisch","Portugiesisch","Niederländisch","Russisch","Japanisch","Koreanisch","Chinesisch","Arabisch","Hindi","Türkisch","Schwedisch","Norwegisch","Dänisch","Finnisch","Polnisch","Tschechisch","Griechisch"};
+            String[] codes = {"de","fr","es","it","pt","nl","ru","ja","ko","zh","ar","hi","tr","sv","no","da","fi","pl","cs","el"};
+            android.widget.ArrayAdapter<String> la = new android.widget.ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new java.util.ArrayList<>(java.util.Arrays.asList(langs)));
+            la.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            trLang.setAdapter(la);
+            trLang.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+                @Override public void onItemSelected(android.widget.AdapterView<?> parent, android.view.View v, int pos, long id) { if (transManager != null) transManager.setTargetLang(codes[pos]); }
+                @Override public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+            });
+            transManager.setTargetLang(codes[0]);
+            trStart.setOnClickListener(v -> { if (!hasRecordPerm()) { requestPerms(); return; } if (transManager != null) transManager.startListening(); });
+            trStop.setOnClickListener(v -> { if (transManager != null) transManager.stopListening(); });
+        } catch (Exception e) {
+            android.util.Log.e("VF-Translate", "Translation setup failed", e);
+            trStatus.setText("Translation unavailable");
+            trStart.setEnabled(false);
+            trStop.setEnabled(false);
+        }
     }
 
     private void setupEffects() {
